@@ -1,4 +1,4 @@
-use heck::AsUpperCamelCase;
+use heck::{AsShoutySnakeCase, AsUpperCamelCase};
 use smol_str::{format_smolstr, SmolStr};
 
 pub trait ToUpperCamelCase {
@@ -21,6 +21,16 @@ impl<TUpperCamel: ?Sized + ToUpperCamelCase> ToPascalCase for TUpperCamel {
     }
 }
 
+pub trait ToShoutySnakeCase {
+    fn to_shouty_snake_case(&self) -> SmolStr;
+}
+
+impl ToShoutySnakeCase for str {
+    fn to_shouty_snake_case(&self) -> SmolStr {
+        format_smolstr!("{}", AsShoutySnakeCase(self))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -33,5 +43,10 @@ mod tests {
     #[test]
     fn test_to_pascal_case() {
         assert_eq!("foo_bar".to_pascal_case(), SmolStr::from("FooBar"));
+    }
+
+    #[test]
+    fn test_to_shouty_snake_case() {
+        assert_eq!("fooBar".to_shouty_snake_case(), SmolStr::from("FOO_BAR"));
     }
 }
